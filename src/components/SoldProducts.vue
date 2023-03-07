@@ -1,48 +1,129 @@
 
-<template>
-  
-  <TopNav/>
-  <SoldProducts :premium="premium" @add-to-cart="updateCart" />
 
+<template>
+  <div class="cart">Cart({{ cart }})</div>
+  <div class="product-display">
+    <div class="product-container">
+      <div class="product-image">
+        <img src="../assets/socks_green.jpg"/>
+      </div>
+      <div class="product-info">
+        <h1>{{ tittle }}</h1>
+        <p v-if="inStock">In Stock</p>
+        <p v-else>Out of Stock</p>
+        <p>Shipping: {{ shipping }}</p>
+        
+        <ul>
+          <li v-for="detail in details " :key="detail">{{ detail }}</li>
+        </ul>
+
+        <div v-for="(variant, index) in variants"
+         :key="variant.id" 
+         @mouseover="updateVariant(index)"
+          class="color-circle" :style="{ backgroundColor: variant.color }">
+        </div>
+        <button class="button" v-on:click="addToCart" :class="{ disabledButton: !inStock }" :disabled="!inStock" >Add to
+          Cart</button>
+      </div>
+
+    </div>
+  </div>
+  <SeeReviews v-if="reviews.length"  :reviews="reviews"/>
+  <CheckForm @review-submitted="addReview"/>
 </template>
 
+
 <script>
-
-import SoldProducts from './components/SoldProducts.vue'
-import TopNav from './components/TopNav.vue'
-
+import CheckForm from './CheckForm.vue';
+import SeeReviews from './SeeReviews.vue'
 
 
 export default {
-  name: 'App',
-  components: {
-    SoldProducts,
-    TopNav
   
+
+  props:{
+  premium:{
+    type: Boolean,
+    required: true,
+  }
+ 
+ 
+},
+  name: 'SoldProducts',
+  components:{
+    CheckForm,
+    SeeReviews
   },
+  
   data() {
     return {
-      cart: [],
-      premium: false
+      
+      emits: ['add-to-cart'],
+      product: 'Socks',
+      brand: 'Malor Cotton',
+      selectedVariant: 0,
+      details: ['50% Wool', '40% Cotton', '10% Poly'],
+      variants: [
+        { id: 10, color: 'green', image: '../assets/socks_green.jpg', quantity: '20' },
+        { id: 11, color: 'blue', image: '../assets/socks_blue.jpg', quantity: '0' }],
+        reviews:[]
     }
+  
+
   },
-  methods:{
-    updateCart(id) {
-      this.cart.push(id)
+  methods: {
+
+    addToCart() {
+      this.$emit(`add-to-cart`,this.variants[this.selectedVariant].id );
+      
+      
+    },
+    updateVariant(index) {
+      this.selectedVariant = index
+    console.log(index)
+    },
+    addReview(review){
+      this.reviews.push(review)
+
+    }
+
+  },
+  computed: {
+    tittle() {
+      return this.brand + ' ' + this.product
+    },
+    image(){
+      return this.variants[this.selectedVariant].image
+    },
+    inStock(){
+      return this.variants[this.selectedVariant].quantity
+    },
+    shipping(){
+      if(this.premium){
+        return 'free'
+      }
+     return '9.99'
     }
   }
 
 }
+
+
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  background-color: #f2f2f2;
+  margin: 0px;
+  font-family: tahoma;
+  color: #282828;
+}
+
+.product-info {
+  width: 40%;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
 body {
@@ -124,6 +205,7 @@ label {
 
 li {
   font-size: 18px;
+  font-weight: 600;
 }
 
 .nav-bar {
@@ -141,6 +223,7 @@ li {
 
 p {
   font-size: 22px;
+  font-weight: bold;
 }
 
 .product-display {

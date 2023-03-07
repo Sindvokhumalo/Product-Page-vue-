@@ -1,50 +1,57 @@
-
 <template>
-  
-  <TopNav/>
-  <SoldProducts :premium="premium" @add-to-cart="updateCart" />
+    <form class="review-form" @submit.prevent="onSubmit">
+        <h3>Leave a review</h3>
+        <label for="name">Name:</label>
+        <input id="name" v-model="name">
 
+        <label for="review">Review:</label>
+        <textarea id="review" v-model="review"></textarea>
+
+        <label for="rating">Rating:</label>
+        <select  id="rating" v-model.number="rating">
+            <option >5</option>
+            <option >4</option>
+            <option >3</option>
+            <option >2</option>
+            <option >1</option>
+        </select>
+
+        <input type="submit" class="button" value="Submit ">
+    </form>
 </template>
 
 <script>
+export default{
+    name: 'CheckForm',
+    data(){
+        return{
+            name: '',
+            review: '',
+            rating: null
+        }
+    }, 
+    methods:{
+        onSubmit(){
+            if(this.name===''|| this.review === '' || this.rating ===null ){
+                alert('Please Fill out every field of the form')
+                return
+            }
+            let productReview={
+                name:this.name,
+                review:this.review,
+                rating:this.rating
+            }
+            this.$emit('review-submitted', productReview)
 
-import SoldProducts from './components/SoldProducts.vue'
-import TopNav from './components/TopNav.vue'
-
-
-
-export default {
-  name: 'App',
-  components: {
-    SoldProducts,
-    TopNav
-  
-  },
-  data() {
-    return {
-      cart: [],
-      premium: false
+           this.name= '',
+           this.review= '',
+            this.rating= null
+        }
     }
-  },
-  methods:{
-    updateCart(id) {
-      this.cart.push(id)
-    }
-  }
-
+      
 }
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 body {
   background-color: #f2f2f2;
   margin: 0px;
@@ -227,4 +234,5 @@ ul {
     width: 90%;
   }
 }
+
 </style>

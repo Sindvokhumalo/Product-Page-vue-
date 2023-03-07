@@ -1,50 +1,32 @@
-
 <template>
-  
-  <TopNav/>
-  <SoldProducts :premium="premium" @add-to-cart="updateCart" />
+    <div class="review-container">
+        <h3>Reviews:</h3>
+        <ul>
+            <li v-for="(review, index) in reviews" :key="index">
+                {{ review.name }} gave this {{ review.rating }} stars
+           <br/>
+             "{{ review.review }}"
 
+           
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>
-
-import SoldProducts from './components/SoldProducts.vue'
-import TopNav from './components/TopNav.vue'
-
-
-
 export default {
-  name: 'App',
-  components: {
-    SoldProducts,
-    TopNav
-  
-  },
-  data() {
-    return {
-      cart: [],
-      premium: false
-    }
-  },
-  methods:{
-    updateCart(id) {
-      this.cart.push(id)
-    }
-  }
+    props: {
+        reviews: {
+            type: Array,
+            required: true,
+        }
 
+
+    },
+    name: 'SeeReviews'
 }
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 body {
   background-color: #f2f2f2;
   margin: 0px;
@@ -97,9 +79,14 @@ h1 {
   font-size: 50px;
 }
 
-h3 {
-  font-size: 25px;
+
+  h3 {
+    font-size: 25px;
+    font-weight: 900;
+    text-align: justify;
+    color: black;
 }
+
 
 img {
   border: 2px solid #d8d8d8;
@@ -227,4 +214,5 @@ ul {
     width: 90%;
   }
 }
+
 </style>
